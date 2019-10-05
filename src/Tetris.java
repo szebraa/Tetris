@@ -11,7 +11,7 @@ public class Tetris
 		window.setSize(WIDTH, HEIGHT);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//need this to be true so that game window can be resized by user
-		window.setResizable(true);
+		window.setResizable(false);
 		window.setLocationRelativeTo(null);
 		board = new Board();
 		window.add(board);
