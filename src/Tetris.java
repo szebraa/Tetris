@@ -1,3 +1,6 @@
+import java.awt.Container;
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 
 public class Tetris 
@@ -8,13 +11,29 @@ public class Tetris
 	public Tetris()
 	{
 		this.window = new JFrame("Alex's Tetris Game");
-		window.setSize(WIDTH, HEIGHT);
+		//window.setSize(WIDTH,HEIGHT);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//need this to be true so that game window can be resized by user
 		window.setResizable(false);
-		window.setLocationRelativeTo(null);
+		
+		
+		//needed to set the content window size correctly (excludes boarder size)
+		Container boardArea = window.getContentPane();
+		Dimension boardSize = new Dimension (WIDTH,HEIGHT);
+		boardArea.setPreferredSize(boardSize);
+		window.pack();
+		
+		
+		
 		board = new Board();
 		window.add(board);
+		//allows us to actually get keyboard input for this board
+		window.addKeyListener(board);
+		
+		window.getContentPane().setSize(WIDTH,HEIGHT);
+		
+		window.setLocationRelativeTo(null);
+		
 		
 		window.setVisible(true);
 	}

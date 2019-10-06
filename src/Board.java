@@ -1,10 +1,15 @@
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-public class Board extends JPanel
+import javax.swing.Timer;
+public class Board extends JPanel implements KeyListener
 {
 	private BufferedImage blocks;
 	private final int blockSize = 30, boardWidth = 10, boardHeight = 20;
@@ -14,6 +19,13 @@ public class Board extends JPanel
 	private Shape [] shapes = new Shape [7];
 	
 	private Shape currentShape;
+	
+	private Timer timer;
+	
+	private final int FPS = 60;
+	
+	private final int delay = 1000/FPS;
+	
 	public Board()
 	{
 		try
@@ -27,6 +39,17 @@ public class Board extends JPanel
 			
 		}
 		
+		timer = new Timer(delay, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				update();
+				repaint();
+			}
+		});
+		
+		timer.start();
 		//create new tetris shapes (note that each x coord corresponds to a different color... i.e.: blocksize != blocksize*2)
 		
 		// I shape
@@ -49,12 +72,18 @@ public class Board extends JPanel
 				{{1,1,1} , {1,0,0}},this);
 		// box shape
 		shapes [6] = new Shape (blocks.getSubimage(blockSize*6, 0, blockSize, blockSize), new int [][]
-				{{0,1,1} , {0,1,1}},this);
+				{{1,1} , {1,1}},this);
 		
 		
 		currentShape = shapes[6];
 	}
 	
+	
+	public void update()
+	{
+		currentShape.update();
+		
+	}
 	
 	public void paintComponent(Graphics g)
 	{
@@ -80,6 +109,36 @@ public class Board extends JPanel
 	public int getBlockSize()
 	{
 		return this.blockSize;
+	}
+
+
+	@Override
+	public void keyTyped(KeyEvent e) 
+	{
+		
+	}
+
+
+	@Override
+	public void keyPressed(KeyEvent e) 
+	{
+		if(e.getKeyCode() == KeyEvent.VK_LEFT)
+			currentShape.setDeltaX(-1);
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+			currentShape.setDeltaX(1);
+		
+		if(e.getKeyCode() == KeyEvent.VK_DOWN)
+			currentShape.speedDown();
+
+	}
+
+
+	@Override
+	public void keyReleased(KeyEvent e) 
+	{
+		if(e.getKeyCode() == KeyEvent.VK_DOWN)
+			currentShape.speedNorm();
+		
 	}
 
 }
