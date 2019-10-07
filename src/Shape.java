@@ -67,6 +67,72 @@ public class Shape
 		}
 	}
 	
+	
+	public void rotate(String str)
+	{
+		int [][] rotatedMatrix = null;
+		
+		rotatedMatrix = getTranspose(coords);
+		rotatedMatrix = (str=="CCW")? swapRows(rotatedMatrix):swapCol(rotatedMatrix);
+		
+		if(x+ rotatedMatrix[0].length > 10 || y + rotatedMatrix.length > 20)
+			return;
+		coords = rotatedMatrix;
+		
+	}
+	
+	
+	private int[][] getTranspose(int[][] matrix)
+	{
+		int [][] newMatrix = new int[matrix[0].length][matrix.length];
+		int i = 0, j = 0;
+		
+		while(i<matrix.length)
+		{
+			while(j<matrix[i].length)
+			{
+				newMatrix[j][i] = matrix[i][j];
+				j++;
+			}
+			j = 0;
+			i++;
+		}
+		return newMatrix;
+	}
+	
+	//rotates shape CCW
+	private int[][] swapRows(int[][] matrix)
+	{
+		int middle = matrix.length/2;
+		int i = 0;
+		
+		while(i<middle)
+		{
+			int [] m = matrix[i];
+			matrix[i] = matrix[matrix.length -i -1];
+			matrix[matrix.length -i -1] = m;
+			i++;
+		}
+		return matrix;
+	}
+	
+	//rotates shape CW (STILL NEEDS WORK!!)
+	private int[][] swapCol(int[][] matrix)
+	{
+		int i = 0;
+		
+		while(i<matrix.length)
+		{
+			//need either try except here or some other logic to prevent array out of bounds...
+			int e = matrix[i][0];
+			matrix[i][0] = matrix[i][matrix.length -i -1];
+			matrix[i][matrix.length -i -1] = e;
+			i++;
+		}
+		return matrix;
+	}
+	
+	
 	public void setDeltaX(int deltaX)
 	{
 		this.deltaX = deltaX;

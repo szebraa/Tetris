@@ -44,7 +44,9 @@ public class Board extends JPanel implements KeyListener
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				//update position of shape
 				update();
+				//paintComponent
 				repaint();
 			}
 		});
@@ -75,7 +77,7 @@ public class Board extends JPanel implements KeyListener
 				{{1,1} , {1,1}},this);
 		
 		
-		currentShape = shapes[6];
+		currentShape = shapes[4];
 	}
 	
 	
@@ -85,10 +87,15 @@ public class Board extends JPanel implements KeyListener
 		
 	}
 	
+	
+	//called implicitly (auto), and through repaint() method
 	public void paintComponent(Graphics g)
 	{
+		//ensures that the background (non-shapes) are painted properly (i.e.: ensures other tiles dont become shapes)
 		super.paintComponent(g);
 		//g.drawImage(blocks,0,0,null);
+		
+		//paints actual shape on the board
 		currentShape.render(g);
 		int i = 0 , j = 0;
 		
@@ -129,6 +136,11 @@ public class Board extends JPanel implements KeyListener
 		
 		if(e.getKeyCode() == KeyEvent.VK_DOWN)
 			currentShape.speedDown();
+		
+		if(e.getKeyCode() == KeyEvent.VK_Q)
+			currentShape.rotate("CCW");
+		if(e.getKeyCode() == KeyEvent.VK_E)
+			currentShape.rotate("CW");
 
 	}
 
