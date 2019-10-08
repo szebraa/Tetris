@@ -116,17 +116,20 @@ public class Shape
 		return matrix;
 	}
 	
-	//rotates shape CW (STILL NEEDS WORK!!)
+	//rotates shape CW
 	private int[][] swapCol(int[][] matrix)
 	{
 		int i = 0;
 		
 		while(i<matrix.length)
 		{
-			//need either try except here or some other logic to prevent array out of bounds...
+
 			int e = matrix[i][0];
-			matrix[i][0] = matrix[i][matrix.length -i -1];
-			matrix[i][matrix.length -i -1] = e;
+			matrix[i][0] = matrix[i][matrix[i].length - 1];
+			matrix[i][matrix[i].length -1] = e;
+
+			//need either try except here or some other logic to prevent array out of bounds...
+
 			i++;
 		}
 		return matrix;
