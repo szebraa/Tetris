@@ -14,7 +14,7 @@ public class Board extends JPanel implements KeyListener
 	private BufferedImage blocks;
 	private final int blockSize = 30, boardWidth = 10, boardHeight = 20;
 	
-	private int [][] board = new int[boardWidth][boardHeight];
+	private int [][] board = new int[boardHeight][boardWidth];
 	
 	private Shape [] shapes = new Shape [7];
 	
@@ -77,7 +77,7 @@ public class Board extends JPanel implements KeyListener
 				{{1,1} , {1,1}},this);
 		
 		
-		currentShape = shapes[4];
+		setNextShape();
 	}
 	
 	
@@ -97,6 +97,15 @@ public class Board extends JPanel implements KeyListener
 		
 		//paints actual shape on the board
 		currentShape.render(g);
+		
+		//once shape ends up at the bottom, or collides with another shape, that shape will turn red (via another drawImage)
+		//board array filled up w/ 1s in position where shapes collided
+		for(int row = 0; row < board.length; row++)
+			for(int col = 0; col < board[row].length; col++)
+				if(board[row][col] != 0)
+					g.drawImage(blocks.getSubimage(0,0,blockSize,blockSize), 
+						col*blockSize, row*blockSize, null);
+		
 		int i = 0 , j = 0;
 		
 		while (i<boardHeight)
@@ -112,6 +121,18 @@ public class Board extends JPanel implements KeyListener
 		}
 	}
 	
+	
+	public void setNextShape()
+	{
+		int index = (int)(Math.random()*shapes.length);
+		Shape NewShape = new Shape(shapes[index].getBlock(),shapes[index].getCoords(),this);
+		currentShape = NewShape;
+	}
+	
+	public int[][] getBoard()
+	{	
+		return board;
+	}
 	
 	public int getBlockSize()
 	{
