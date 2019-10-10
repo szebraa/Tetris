@@ -26,6 +26,8 @@ public class Board extends JPanel implements KeyListener
 	
 	private final int delay = 1000/FPS;
 	
+	private boolean gameOver = false;
+	
 	public Board()
 	{
 		try
@@ -54,27 +56,28 @@ public class Board extends JPanel implements KeyListener
 		timer.start();
 		//create new tetris shapes (note that each x coord corresponds to a different color... i.e.: blocksize != blocksize*2)
 		
+		//shapes are set with colors betweeen 1 - 7
 		// I shape
 		shapes [0] = new Shape (blocks.getSubimage(0, 0, blockSize, blockSize), new int [][]
-				{{1,1,1,1}},this);
+				{{1,1,1,1}},this,1);
 		// Z shape
 		shapes [1] = new Shape (blocks.getSubimage(blockSize, 0, blockSize, blockSize), new int [][]
-				{{1,1,0} , {0,1,1}},this);
+				{{1,1,0} , {0,1,1}},this,2);
 		// S shape
 		shapes [2] = new Shape (blocks.getSubimage(blockSize*2, 0, blockSize, blockSize), new int [][]
-				{{0,1,1} , {1,1,0}},this);
+				{{0,1,1} , {1,1,0}},this,3);
 		// T shape
 		shapes [3] = new Shape (blocks.getSubimage(blockSize*3, 0, blockSize, blockSize), new int [][]
-				{{1,1,1} , {0,1,0}},this);
+				{{1,1,1} , {0,1,0}},this,4);
 		// J shape
 		shapes [4] = new Shape (blocks.getSubimage(blockSize*4, 0, blockSize, blockSize), new int [][]
-				{{1,1,1} , {0,0,1}},this);
+				{{1,1,1} , {0,0,1}},this,5);
 		// L shape
 		shapes [5] = new Shape (blocks.getSubimage(blockSize*5, 0, blockSize, blockSize), new int [][]
-				{{1,1,1} , {1,0,0}},this);
+				{{1,1,1} , {1,0,0}},this,6);
 		// box shape
 		shapes [6] = new Shape (blocks.getSubimage(blockSize*6, 0, blockSize, blockSize), new int [][]
-				{{1,1} , {1,1}},this);
+				{{1,1} , {1,1}},this,7);
 		
 		
 		setNextShape();
@@ -84,6 +87,8 @@ public class Board extends JPanel implements KeyListener
 	public void update()
 	{
 		currentShape.update();
+		if(gameOver)
+			timer.stop();
 		
 	}
 	
@@ -99,11 +104,12 @@ public class Board extends JPanel implements KeyListener
 		currentShape.render(g);
 		
 		//once shape ends up at the bottom, or collides with another shape, that shape will turn red (via another drawImage)
-		//board array filled up w/ 1s in position where shapes collided
+		//board array filled up w/ # other than 0 in position where shapes collided
+		//need to -1 from board array to get the correct subimage (0-6)
 		for(int row = 0; row < board.length; row++)
 			for(int col = 0; col < board[row].length; col++)
 				if(board[row][col] != 0)
-					g.drawImage(blocks.getSubimage(0,0,blockSize,blockSize), 
+					g.drawImage(blocks.getSubimage((board[row][col]-1) *blockSize,0,blockSize,blockSize), 
 						col*blockSize, row*blockSize, null);
 		
 		int i = 0 , j = 0;
@@ -125,8 +131,18 @@ public class Board extends JPanel implements KeyListener
 	public void setNextShape()
 	{
 		int index = (int)(Math.random()*shapes.length);
-		Shape NewShape = new Shape(shapes[index].getBlock(),shapes[index].getCoords(),this);
+		Shape NewShape = new Shape(shapes[index].getBlock(),shapes[index].getCoords(),
+				this,shapes[index].getColor());
 		currentShape = NewShape;
+		
+		for(int row = 0; row < currentShape.getCoords().length; row++)
+			for(int col = 0; col < currentShape.getCoords()[row].length; col++)
+				if(currentShape.getCoords()[row][col] != 0)
+				{
+					if(board[row][col + 3] != 0)
+						gameOver = true;
+				}
+		
 	}
 	
 	public int[][] getBoard()

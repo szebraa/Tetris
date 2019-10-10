@@ -13,15 +13,16 @@ public class Shape
 	
 	private boolean collision = false, moveX = false;
 	
-	private int normalSpeed = 600, speedDown = 70, curSpeed;
+	private int normalSpeed = 600, speedDown = 70, curSpeed, color;
 	
 	private long timePassed, lastTime;
 	
-	public Shape(BufferedImage block, int [][] coords, Board board)
+	public Shape(BufferedImage block, int [][] coords, Board board, int color)
 	{
 		this.block = block;
 		this.coords = coords;
 		this.board = board;
+		this.color = color;
 		curSpeed = normalSpeed;
 		
 		timePassed = 0;
@@ -38,14 +39,14 @@ public class Shape
 		timePassed += System.currentTimeMillis() - lastTime;
 		lastTime = System.currentTimeMillis();
 		
-		//fills out occupied board spaces occupied by shapes (fills out board with 1s where shapes already exist)
+		//fills out occupied board spaces occupied by shapes (fills out board with a number between 1 -7 (for block colors) where shapes already exist)
 		if(collision)
 		{
 			for(int row = 0; row < coords.length; row++)
 				for(int col = 0; col < coords[row].length; col++)
 					if(coords[row][col] != 0)
-						board.getBoard()[y + row][x + col] = 1;
-						
+						board.getBoard()[y + row][x + col] = color;
+			checkLine();			
 			board.setNextShape();
 			
 		}
@@ -113,9 +114,35 @@ public class Shape
 		}
 	}
 	
+	//used to get rid of completed rows 
+	private void checkLine()
+	{
+		int height = board.getBoard().length - 1;
+		for(int i = height; i > 0 ; i--)
+		{
+			int count = 0;
+			for(int j = 0; j < board.getBoard()[0].length; j++)
+			{
+				
+				if(board.getBoard()[i][j] !=0)
+					count++;
+				//rows will only be replaced iff there's a full row at least once
+				board.getBoard()[height][j] = board.getBoard()[i][j];
+			}
+			
+			//if no rows to be deleted, then height and i will stay same val
+			if(count < board.getBoard()[0].length)
+				height--;
+			
+		}
+		
+	}
 	
 	public void rotate(String str)
 	{
+		//prevents objects from hanging when rotating
+		if(collision)
+			return;
 		int [][] rotatedMatrix = null;
 		
 		rotatedMatrix = getTranspose(coords);
@@ -123,6 +150,16 @@ public class Shape
 		
 		if(x+ rotatedMatrix[0].length > 10 || y + rotatedMatrix.length > 20)
 			return;
+		//checks if rotating shape will collide w/ another shape
+		for(int row = 0; row<rotatedMatrix.length; row++)
+		{
+			//if there's collsion, prevent coords of shape to be updated to rotated coords
+			for(int col = 0; col<rotatedMatrix[0].length;col++)
+				if(board.getBoard()[y+row][x+col] !=0)
+					return;
+		}
+		
+		
 		coords = rotatedMatrix;
 		
 	}
@@ -204,6 +241,11 @@ public class Shape
 	public BufferedImage getBlock()
 	{
 		return block;
+	}
+	
+	public int getColor()
+	{
+		return color;
 	}
 	
 }
