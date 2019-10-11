@@ -36,6 +36,7 @@ public class Tetris
 		
 		
 		window.setVisible(true);
+		new Music();
 	}
 
 	public static void main(String[] args) 
