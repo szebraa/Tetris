@@ -2,8 +2,14 @@ import java.awt.Container;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import java.io.FileInputStream;
+import java.io.IOException;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 
-public class Tetris 
+
+
+public class Tetris
 {
 	private static final int WIDTH = 300,HEIGHT =600;
 	private JFrame window;
@@ -36,7 +42,35 @@ public class Tetris
 		
 		
 		window.setVisible(true);
-		new Music();
+		
+		
+		//TESTING MUSIC PORTION OF GAME
+		//create music obj and set the Player obj
+		Music test = new Music();
+		test.setMusicPlayer();
+		//initiate thread for starting the music (infinitely)
+		MyRunnable musicPlayerStart = new MyRunnable(test,null,true); 
+		Thread t = new Thread(musicPlayerStart);
+		t.start();
+		
+		//delay by 5 seconds
+		try
+		{
+		    Thread.sleep(5000);
+		}
+		catch(InterruptedException ex)
+		{
+		    Thread.currentThread().interrupt();
+		}
+		
+		//get same Player obj
+		Player test2 = test.getMusicPlayer();
+		
+		//initiate thread for stopping the song
+		MyRunnable musicPlayerStop = new MyRunnable(test,test2,false); 
+		Thread t2 = new Thread(musicPlayerStop);
+		t2.start();
+		
 	}
 
 	public static void main(String[] args) 
