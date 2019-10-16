@@ -11,9 +11,11 @@ import javazoom.jl.player.Player;
 
 public class Tetris
 {
-	private static final int WIDTH = 300,HEIGHT =600;
+	private static final int WIDTH = 450,HEIGHT =600;
 	private JFrame window;
 	private Board board;
+	private Menu menu;
+	
 	public Tetris()
 	{
 		this.window = new JFrame("Alex's Tetris Game");
@@ -29,12 +31,27 @@ public class Tetris
 		boardArea.setPreferredSize(boardSize);
 		window.pack();
 		
-		
-		
+		this.menu = new Menu(this);
+		//window.add(menu);
+		// logic to start the game 
+		//
 		board = new Board();
-		window.add(board);
 		//allows us to actually get keyboard input for this board
 		window.addKeyListener(board);
+		
+		//ensures that mouse actions can be detected in the title screen
+		window.addMouseListener(menu);
+		window.addMouseMotionListener(menu);
+		
+		//ensures menu is seen
+		window.add(menu);
+		
+		//allows us to actually see the board
+		//window.add(board);
+		//allows us to actually get keyboard input for this board
+		//window.addKeyListener(board);
+		
+		//
 		
 		window.getContentPane().setSize(WIDTH,HEIGHT);
 		
@@ -56,7 +73,7 @@ public class Tetris
 		//delay by 5 seconds
 		try
 		{
-		    Thread.sleep(5000);
+		    Thread.sleep(10000);
 		}
 		catch(InterruptedException ex)
 		{
@@ -72,6 +89,28 @@ public class Tetris
 		t2.start();
 		
 	}
+	
+	public void startGame()
+	{
+		window.remove(menu);
+		
+		//allows us to actually see the board
+		window.add(board);
+		//needs to be called to ensure that transition between title screen and game can be seen.. otherwise will hang on menu screen
+		window.revalidate();
+
+	}
+	
+	public int getWidth()
+	{
+		return WIDTH;
+	}
+	
+	public int getHeight()
+	{
+		return HEIGHT;
+	}
+
 
 	public static void main(String[] args) 
 	{

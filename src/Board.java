@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 public class Board extends JPanel implements KeyListener
 {
-	private BufferedImage blocks;
+	private BufferedImage blocks,background;
 	private final int blockSize = 30, boardWidth = 10, boardHeight = 20;
 	
 	private int [][] board = new int[boardHeight][boardWidth];
@@ -33,6 +33,7 @@ public class Board extends JPanel implements KeyListener
 		try
 		{
 			blocks = ImageIO.read(Board.class.getResource("/tetris_block_sprite.png"));
+			background = ImageIO.read(Board.class.getResource("/beautiful_background_image_part.jpg"));
 		}
 		
 		catch (IOException e)
@@ -98,7 +99,7 @@ public class Board extends JPanel implements KeyListener
 	{
 		//ensures that the background (non-shapes) are painted properly (i.e.: ensures other tiles dont become shapes)
 		super.paintComponent(g);
-		//g.drawImage(blocks,0,0,null);
+		g.drawImage(background,0,0,null);
 		
 		//paints actual shape on the board
 		currentShape.render(g);
@@ -114,13 +115,13 @@ public class Board extends JPanel implements KeyListener
 		
 		int i = 0 , j = 0;
 		
-		while (i<boardHeight)
+		while (i<boardHeight + 1)
 		{
 			g.drawLine(0, i*blockSize, boardWidth*blockSize, i*blockSize);
 			i++;
 		}
 		
-		while (j<boardWidth)
+		while (j<boardWidth + 1)
 		{
 			g.drawLine(j * blockSize, 0, j*blockSize, boardHeight*blockSize);
 			j++;
