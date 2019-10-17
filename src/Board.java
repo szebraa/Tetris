@@ -54,6 +54,13 @@ public class Board extends JPanel implements KeyListener
 			}
 		});
 		
+
+	}
+	
+	
+	
+	public void gameLoop()
+	{
 		timer.start();
 		//create new tetris shapes (note that each x coord corresponds to a different color... i.e.: blocksize != blocksize*2)
 		
@@ -82,9 +89,8 @@ public class Board extends JPanel implements KeyListener
 		
 		
 		setNextShape();
+		
 	}
-	
-	
 	public void update()
 	{
 		currentShape.update();

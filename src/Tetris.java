@@ -98,6 +98,7 @@ public class Tetris
 		window.add(board);
 		//needs to be called to ensure that transition between title screen and game can be seen.. otherwise will hang on menu screen
 		window.revalidate();
+		board.gameLoop();
 
 	}
 	
