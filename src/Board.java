@@ -18,7 +18,7 @@ public class Board extends JPanel implements KeyListener
 	
 	private Shape [] shapes = new Shape [7];
 	
-	private Shape currentShape;
+	private Shape currentShape,nextShape;
 	
 	private Timer timer;
 	
@@ -87,8 +87,9 @@ public class Board extends JPanel implements KeyListener
 		shapes [6] = new Shape (blocks.getSubimage(blockSize*6, 0, blockSize, blockSize), new int [][]
 				{{1,1} , {1,1}},this,7);
 		
-		
+		determineNextShape();
 		setNextShape();
+		determineNextShape();
 		
 	}
 	public void update()
@@ -109,7 +110,9 @@ public class Board extends JPanel implements KeyListener
 		
 		//paints actual shape on the board
 		currentShape.render(g);
-		
+		currentShape.dispShape(g,11,5);
+		nextShape.dispShape(g,11,8);
+		//nextShape.render(g);
 		//once shape ends up at the bottom, or collides with another shape, that shape will turn red (via another drawImage)
 		//board array filled up w/ # other than 0 in position where shapes collided
 		//need to -1 from board array to get the correct subimage (0-6)
@@ -137,10 +140,12 @@ public class Board extends JPanel implements KeyListener
 	
 	public void setNextShape()
 	{
+		/*
 		int index = (int)(Math.random()*shapes.length);
 		Shape NewShape = new Shape(shapes[index].getBlock(),shapes[index].getCoords(),
 				this,shapes[index].getColor());
-		currentShape = NewShape;
+		currentShape = NewShape;*/
+		currentShape = nextShape;
 		
 		for(int row = 0; row < currentShape.getCoords().length; row++)
 			for(int col = 0; col < currentShape.getCoords()[row].length; col++)
@@ -150,6 +155,14 @@ public class Board extends JPanel implements KeyListener
 						gameOver = true;
 				}
 		
+	}
+	
+	
+	public void determineNextShape()
+	{
+		int index = (int)(Math.random()*shapes.length);
+		nextShape = new Shape(shapes[index].getBlock(),shapes[index].getCoords(),
+				this,shapes[index].getColor());
 	}
 	
 	public int[][] getBoard()

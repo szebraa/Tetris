@@ -46,8 +46,9 @@ public class Shape
 				for(int col = 0; col < coords[row].length; col++)
 					if(coords[row][col] != 0)
 						board.getBoard()[y + row][x + col] = color;
-			checkLine();			
+			checkLine();
 			board.setNextShape();
+			board.determineNextShape();
 			
 		}
 		
@@ -114,6 +115,25 @@ public class Shape
 		}
 	}
 	
+	public void dispShape(Graphics g, int x_offset, int y_offset)
+	{
+		int row = 0, col = 0;
+		while (row < coords.length)
+		{
+			while(col < coords[row].length)
+			{
+				if(coords[row][col]!=0)
+					g.drawImage(block,col*board.getBlockSize() + x_offset*board.getBlockSize(),row*board.getBlockSize() + y_offset*board.getBlockSize(),null);
+				col++;
+			}
+			col = 0;
+			row++;
+		}
+		
+	}
+	
+
+	
 	//used to get rid of completed rows 
 	private void checkLine()
 	{
@@ -135,7 +155,6 @@ public class Shape
 				height--;
 			
 		}
-		
 	}
 	
 	public void rotate(String str)
