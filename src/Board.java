@@ -1,17 +1,22 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-public class Board extends JPanel implements KeyListener
+public class Board extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
-	private BufferedImage blocks,background;
+	private BufferedImage blocks,background,menuButton;
 	private final int blockSize = 30, boardWidth = 10, boardHeight = 20;
 	
 	private int [][] board = new int[boardHeight][boardWidth];
@@ -28,12 +33,15 @@ public class Board extends JPanel implements KeyListener
 	
 	private boolean gameOver = false;
 	
+	private int score = 0;
+	
 	public Board()
 	{
 		try
 		{
 			blocks = ImageIO.read(Board.class.getResource("/tetris_block_sprite.png"));
 			background = ImageIO.read(Board.class.getResource("/beautiful_background_image_part.jpg"));
+			menuButton = ImageIO.read(Board.class.getResource("/menu-button.png"));
 		}
 		
 		catch (IOException e)
@@ -97,7 +105,6 @@ public class Board extends JPanel implements KeyListener
 		currentShape.update();
 		if(gameOver)
 			timer.stop();
-		
 	}
 	
 	
@@ -110,9 +117,19 @@ public class Board extends JPanel implements KeyListener
 		
 		//paints actual shape on the board
 		currentShape.render(g);
-		currentShape.dispShape(g,11,5);
-		nextShape.dispShape(g,11,8);
-		//nextShape.render(g);
+		nextShape.dispShape(g,11,5);
+		currentShape.dispShape(g,11,9);
+		//text image settings
+		g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+		g.setColor(Color.WHITE);
+		g.drawString("Next Shape:", 11*blockSize,4*blockSize);
+		g.drawString("Current Shape:", 11*blockSize,8*blockSize);
+		//displays score
+		g.drawString("Score: " + Integer.toString(score), 11*blockSize,13*blockSize);
+		//rest of the objects color (i.e.: gridlines, etc)
+		g.setColor(Color.BLACK);
+		
+		g.drawImage(menuButton,11*blockSize,16*blockSize,null);
 		//once shape ends up at the bottom, or collides with another shape, that shape will turn red (via another drawImage)
 		//board array filled up w/ # other than 0 in position where shapes collided
 		//need to -1 from board array to get the correct subimage (0-6)
@@ -137,7 +154,7 @@ public class Board extends JPanel implements KeyListener
 		}
 	}
 	
-	
+	//sets the current shape to the determined next shape
 	public void setNextShape()
 	{
 		/*
@@ -157,12 +174,17 @@ public class Board extends JPanel implements KeyListener
 		
 	}
 	
-	
+	//determines next shape in tetris game
 	public void determineNextShape()
 	{
 		int index = (int)(Math.random()*shapes.length);
 		nextShape = new Shape(shapes[index].getBlock(),shapes[index].getCoords(),
 				this,shapes[index].getColor());
+	}
+	
+	public void incScore()
+	{
+		score++;
 	}
 	
 	public int[][] getBoard()
@@ -200,7 +222,7 @@ public class Board extends JPanel implements KeyListener
 			currentShape.rotate("CW");
 
 	}
-
+	
 
 	@Override
 	public void keyReleased(KeyEvent e) 
@@ -209,5 +231,59 @@ public class Board extends JPanel implements KeyListener
 			currentShape.speedNorm();
 		
 	}
+	
+	
+	
+	
+	//check if mouse left click is clicked
+		@Override
+		public void mousePressed(MouseEvent e) 
+		{
+
+
+		}
+		//check if mouse left click is released
+		@Override
+		public void mouseReleased(MouseEvent e) 
+		{
+
+
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) 
+		{
+
+		}
+
+		//update mouse position
+		@Override
+		public void mouseMoved(MouseEvent e) 
+		{
+
+
+		}
+		
+		
+		
+		
+		
+
+		@Override
+		public void mouseClicked(MouseEvent e) 
+		{	
+			
+		}
+
+
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}
 
 }

@@ -11,7 +11,7 @@ import javazoom.jl.player.Player;
 
 public class Tetris
 {
-	private static final int WIDTH = 450,HEIGHT =600;
+	private static final int WIDTH = 480,HEIGHT =600;
 	private JFrame window;
 	private Board board;
 	private Menu menu;

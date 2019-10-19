@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 public class Shape 
 {
 	private BufferedImage block;
-	private int [][] coords;
+	private int [][] coords, constCoords;
 	private Board board;
 	
 	private int deltaX = 0;
@@ -21,6 +21,8 @@ public class Shape
 	{
 		this.block = block;
 		this.coords = coords;
+		//need this to display current and next shape w/o changing when shape is rotated
+		this.constCoords = coords;
 		this.board = board;
 		this.color = color;
 		curSpeed = normalSpeed;
@@ -118,11 +120,11 @@ public class Shape
 	public void dispShape(Graphics g, int x_offset, int y_offset)
 	{
 		int row = 0, col = 0;
-		while (row < coords.length)
+		while (row < constCoords.length)
 		{
-			while(col < coords[row].length)
+			while(col < constCoords[row].length)
 			{
-				if(coords[row][col]!=0)
+				if(constCoords[row][col]!=0)
 					g.drawImage(block,col*board.getBlockSize() + x_offset*board.getBlockSize(),row*board.getBlockSize() + y_offset*board.getBlockSize(),null);
 				col++;
 			}
@@ -153,6 +155,8 @@ public class Shape
 			//if no rows to be deleted, then height and i will stay same val
 			if(count < board.getBoard()[0].length)
 				height--;
+			else
+				board.incScore();
 			
 		}
 	}
