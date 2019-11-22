@@ -14,7 +14,7 @@ public class Tetris
 	private static final int WIDTH = 480,HEIGHT =600;
 	private JFrame window;
 	private Board board;
-	private Menu menu;
+	private Titlemenu titleScreen;
 	
 	public Tetris()
 	{
@@ -30,21 +30,23 @@ public class Tetris
 		Dimension boardSize = new Dimension (WIDTH,HEIGHT);
 		boardArea.setPreferredSize(boardSize);
 		window.pack();
-		
-		this.menu = new Menu(this);
+		String [] title_menu_paths = {"/Title.png","/controls.png","/play_button.png"};
+		this.titleScreen = new Titlemenu(this,title_menu_paths);
 		//window.add(menu);
 		// logic to start the game 
 		//
-		board = new Board();
+		board = new Board(this);
 		//allows us to actually get keyboard input for this board
 		window.addKeyListener(board);
-		
+		//allows us to actually get mouse motion and click input for this board
+		window.addMouseMotionListener(board);
+		window.addMouseListener(board);
 		//ensures that mouse actions can be detected in the title screen
-		window.addMouseListener(menu);
-		window.addMouseMotionListener(menu);
+		window.addMouseListener(titleScreen);
+		window.addMouseMotionListener(titleScreen);
 		
 		//ensures menu is seen
-		window.add(menu);
+		window.add(titleScreen);
 		
 		//allows us to actually see the board
 		//window.add(board);
@@ -92,7 +94,7 @@ public class Tetris
 	
 	public void startGame()
 	{
-		window.remove(menu);
+		window.remove(titleScreen);
 		
 		//allows us to actually see the board
 		window.add(board);
@@ -100,6 +102,11 @@ public class Tetris
 		window.revalidate();
 		board.gameLoop();
 
+	}
+	
+	public JFrame getWindow()
+	{
+		return window;
 	}
 	
 	public int getWidth()

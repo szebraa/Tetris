@@ -12,20 +12,28 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 public class Board extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
-	private BufferedImage blocks,background,menuButton;
-	private final int blockSize = 30, boardWidth = 10, boardHeight = 20;
-	
+	private BufferedImage blocks,background,menuButton,menuButtonBlack;
+	private String [] gameMenuImgpaths = {"/resume_button.png","/restart_button.png","/exit_button.png","/beautiful_background_image_part.jpg"}; 
+	private final int blockSize = 30, boardWidth = 10, boardHeight = 20, menuButtonx1 = 333, menuButtonx2 = 463, menuButtony1 = 504, menuButtony2 = 546;
+	private int pos_x,pos_y;
+	private boolean leftClicked;
 	private int [][] board = new int[boardHeight][boardWidth];
+	private Gamemenu game_menu;
 	
 	private Shape [] shapes = new Shape [7];
 	
 	private Shape currentShape,nextShape;
 	
+	private Tetris window;
+	
 	private Timer timer;
+	
+	private JFrame jframe_window;
 	
 	private final int FPS = 60;
 	
@@ -35,13 +43,14 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	
 	private int score = 0;
 	
-	public Board()
+	public Board(Tetris window)
 	{
 		try
 		{
 			blocks = ImageIO.read(Board.class.getResource("/tetris_block_sprite.png"));
 			background = ImageIO.read(Board.class.getResource("/beautiful_background_image_part.jpg"));
 			menuButton = ImageIO.read(Board.class.getResource("/menu-button.png"));
+			menuButtonBlack = ImageIO.read(Board.class.getResource("/menu-button_black.png"));
 		}
 		
 		catch (IOException e)
@@ -62,7 +71,18 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 			}
 		});
 		
-
+		//init mouse starting position
+		pos_x = 0;
+		pos_y = 0;
+		
+		this.window = window;
+		game_menu = new Gamemenu(this.window,gameMenuImgpaths, this);
+		jframe_window = this.window.getWindow();
+		jframe_window.addMouseListener(game_menu);
+		jframe_window.addMouseMotionListener(game_menu);
+		
+		game_menu.setTimer();
+		
 	}
 	
 	
@@ -115,6 +135,22 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 		super.paintComponent(g);
 		g.drawImage(background,0,0,null);
 		
+		
+		//go to Game Menu if Menu button is clicked
+		if(leftClicked && pos_x <= menuButtonx2 && pos_x >= menuButtonx1 && pos_y <= menuButtony2 && pos_y >= menuButtony1)
+		{
+			//System.out.println("here");
+			timer.stop();
+			//should call some method in GameMenu to open menu
+			game_menu.setMouseCoords();
+			game_menu.startTimer();
+			//ensures menu is seen
+			jframe_window.remove(this);
+			jframe_window.add(game_menu);
+			jframe_window.revalidate();
+		}
+		
+		
 		//paints actual shape on the board
 		currentShape.render(g);
 		nextShape.dispShape(g,11,5);
@@ -128,8 +164,12 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 		g.drawString("Score: " + Integer.toString(score), 11*blockSize,13*blockSize);
 		//rest of the objects color (i.e.: gridlines, etc)
 		g.setColor(Color.BLACK);
-		
-		g.drawImage(menuButton,11*blockSize,16*blockSize,null);
+
+		if(pos_x <= menuButtonx2 && pos_x >= menuButtonx1 && pos_y <= menuButtony2 && pos_y >= menuButtony1)
+			g.drawImage(menuButtonBlack,11*blockSize,16*blockSize,null);
+		else
+			g.drawImage(menuButton,11*blockSize,16*blockSize,null);
+
 		//once shape ends up at the bottom, or collides with another shape, that shape will turn red (via another drawImage)
 		//board array filled up w/ # other than 0 in position where shapes collided
 		//need to -1 from board array to get the correct subimage (0-6)
@@ -152,6 +192,10 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 			g.drawLine(j * blockSize, 0, j*blockSize, boardHeight*blockSize);
 			j++;
 		}
+		/* THIS IS HOW U WOULD STOP AND START GAME WHEN EXITING TO A MENU 
+		timer.stop();
+		timer.restart();
+		*/
 	}
 	
 	//sets the current shape to the determined next shape
@@ -236,54 +280,57 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	
 	
 	//check if mouse left click is clicked
-		@Override
-		public void mousePressed(MouseEvent e) 
-		{
+	@Override
+	public void mousePressed(MouseEvent e) 
+	{
+		if(e.getButton() == MouseEvent.BUTTON1)
+			leftClicked = true;
 
+	}
+	//check if mouse left click is released
+	@Override
+	public void mouseReleased(MouseEvent e) 
+	{
+		if(e.getButton() == MouseEvent.BUTTON1)
+			leftClicked = false;
 
-		}
-		//check if mouse left click is released
-		@Override
-		public void mouseReleased(MouseEvent e) 
-		{
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) 
+	{
 
+	}
 
-		}
+	//update mouse position
+	@Override
+	public void mouseMoved(MouseEvent e) 
+	{
+		pos_x = e.getX();
+		pos_y = e.getY();
+
+	}
+	
+	
+	
+	
+	
+
+	@Override
+	public void mouseClicked(MouseEvent e) 
+	{	
 		
-		@Override
-		public void mouseDragged(MouseEvent e) 
-		{
-
-		}
-
-		//update mouse position
-		@Override
-		public void mouseMoved(MouseEvent e) 
-		{
+	}
 
 
-		}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
 		
-		
-		
-		
-		
+	}
 
-		@Override
-		public void mouseClicked(MouseEvent e) 
-		{	
-			
-		}
-
-
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
 
 }

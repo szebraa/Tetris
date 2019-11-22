@@ -14,13 +14,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Menu extends JPanel implements MouseListener, MouseMotionListener
+public class Titlemenu extends Menu
 {
 	private BufferedImage title, controls, play_buttons;
-	
+	private BufferedImage [] title_imgs;
 	private int pos_x,pos_y, window_width, window_height;
-	private Color menu_background;
-	private BufferedImage [] imgs;
 	private Timer timer;
 	private Tetris window;
 	private Rectangle bounds;
@@ -32,30 +30,14 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener
 	private BufferedImage [] playButton = new BufferedImage[2];
 	private final int delay = 1000/FPS;
 	
-	public Menu(Tetris window,String [] img_paths)
+	
+	
+	
+	public Titlemenu(Tetris window,String [] title_menu_paths)
 	{
+		super(window,title_menu_paths);
+		title_imgs = super.getImages();
 		
-		try
-		{
-			int i = 0;
-			imgs = new BufferedImage[img_paths.length];
-			while(i<imgs.length)
-			{
-				imgs[i] = ImageIO.read(Board.class.getResource(img_paths[i]));
-				i++;
-			}
-			//load images (title of game, controls, and option to start game (play_buttons))
-			this.title = ImageIO.read(Board.class.getResource("/Title.png"));
-			this.controls = ImageIO.read(Board.class.getResource("/controls.png"));
-			this.play_buttons = ImageIO.read(Board.class.getResource("/play_button.png"));
-		}
-		
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			
-		}
-		/*
 		//call repaint (paintComponent) constantly (on a timer)
 		timer = new Timer(delay, new ActionListener() {
 			
@@ -74,19 +56,18 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener
 		pos_y = 0;
 		
 		//get changing play buttons (changes color when scrolled over)
-		playButton[0] = play_buttons.getSubimage(0, 0, 100, 80);
-		playButton[1] = play_buttons.getSubimage(100, 0, 100, 80);
+		playButton[0] = title_imgs[2].getSubimage(0, 0, 100, 80);
+		playButton[1] = title_imgs[2].getSubimage(100, 0, 100, 80);
 		this.window = window;
 		window_width = window.getWidth();
 		window_height = window.getHeight();
 		
 		//get bounds of the play button
 		bounds = new Rectangle(window_width/2 - 50, window_height/2 - 100, 100, 80);
-		*/
 		
 	}
 	
-	/*
+	
 	//called implicitly (auto), and through repaint() method
 	public void paintComponent(Graphics g)
 	{
@@ -105,9 +86,9 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener
 		g.fillRect(0, 0, window_width, window_height);
 		
 
-		g.drawImage(title, window_width/2 - title.getWidth()/2, window_height/2 - title.getHeight()/2 - 200, null);
-		g.drawImage(controls, window_width/2 - controls.getWidth()/2,
-				window_height/2 - play_buttons.getHeight()/2 + 50, null);
+		g.drawImage(title_imgs[0], window_width/2 - title_imgs[0].getWidth()/2, window_height/2 - title_imgs[0].getHeight()/2 - 200, null);
+		g.drawImage(title_imgs[1], window_width/2 - title_imgs[1].getWidth()/2,
+				window_height/2 - title_imgs[2].getHeight()/2 + 50, null);
 		
 		//changes color of play button depending on if hover over it or not
 		if(bounds.contains(pos_x, pos_y))
@@ -116,7 +97,7 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener
 			g.drawImage(playButton[1], window_width/2 - 50, window_height/2 - 100, null);
 		
 	}
-	*/
+	
 	//check if mouse left click is clicked
 	@Override
 	public void mousePressed(MouseEvent e) 
@@ -173,12 +154,9 @@ public class Menu extends JPanel implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
-	
-	
-	public BufferedImage[] getImages()
-	{
-		return imgs;
-	}
 
+	
+	
+	
 
 }
